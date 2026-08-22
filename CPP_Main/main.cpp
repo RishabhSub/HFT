@@ -1,11 +1,19 @@
 #include "data.h"
 #include <cstdlib>
+#include <iostream>
 
 int main() {
-    std::vector<StockData> stockdata;
+    std::map<std::string, std::vector<StockData>> stockdata;
     DataCollector dc;
-    
-    dc.ReadData(stockdata);
+    std::string input;
+    std::cin >> input;
 
+    while (input != "S") {
+        dc.ReadData(stockdata);
+        dc.LineOfData(stockdata, "ITC.NS");
+        std::cin >> input;
+    }
+
+    std::cout << "Done!" << std::endl;
     return 0;
 }

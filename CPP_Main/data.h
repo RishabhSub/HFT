@@ -3,11 +3,12 @@
 
 #include <string>
 #include <cstdint>
+#include <map>
 #include <vector>
 
 struct StockData {
-    // std::string Ticker;
     std::string Date;
+    double Price;
     double Close;
     double High;
     double Low;
@@ -18,21 +19,21 @@ struct StockData {
 class DataCollector {
 
 private:
-    std::vector<StockData> stockdata;
-    // void EnterData(std::vector<StockData> &stockdata);
+    std::map<std::string, std::vector<StockData>> stockdata;
 
 public:
     DataCollector();
-    void ReadData(std::vector<StockData> &stockdata);
-    // void StoreValues(std::vector<StockData> &stockdata);
+    void ReadData(std::map<std::string, std::vector<StockData>>  &stockdata);
 
-    // std::string getTicker(std::vector<StockData> &stockdata);
-    // std::string getDate(std::vector<StockData> &stockdata);
-    // double getClose(std::vector<StockData> &stockdata);
-    // double getHigh(std::vector<StockData> &stockdata);
-    // double getLow(std::vector<StockData> &stockdata);
-    // double getOpen(std::vector<StockData> &stockdata);
-    // uint64_t getVolume(std::vector<StockData> &stockdata);
+    void LineOfData(std::map<std::string, std::vector<StockData>>  &stockdata, std::string ticker);
+
+    // std::string getTicker(std::map<std::string, std::vector<StockData>> &stockdata);
+    // std::string getDate(std::map<std::string, std::vector<StockData>>&stockdata, std::string ticker);
+    // double getClose(std::map<std::string, std::vector<StockData>> &stockdata, std::string ticker);
+    // double getHigh(std::map<std::string, std::vector<StockData>> &stockdata, std::string ticker);
+    // double getLow(std::map<std::string, std::vector<StockData>> &stockdata, std::string ticker);
+    // double getOpen(std::map<std::string, std::vector<StockData>> &stockdata, std::string ticker);
+    // uint64_t getVolume(std::map<std::string, std::vector<StockData>> &stockdata, std::string ticker);
     
 };
 

@@ -7,55 +7,129 @@ DataCollector::DataCollector()
 {
 }
 
-void DataCollector::ReadData(std::vector<StockData> &stockdata) {
+void DataCollector::ReadData(std::map<std::string, std::vector<StockData>> &stockdata) {
+    std::map<std::string, std::vector<StockData>>* sdptr = &stockdata;
     std::ifstream fd;
-    std::string line = "";
+    std::string wholeLine = "";
     int commaLocation = 0;
     std::string first = "";
+    std::string ticker = "";
+
+    std::string date;
+    double price, close, high, low, open;
+    uint64_t volume;
 
     fd.open("../HistoricalFinancialData/ITC.csv");
-    std::getline(fd, line);
-    std::getline(fd, line);
-    std::getline(fd, line);
-    commaLocation = line.find(',');
-    first = line.substr(0, commaLocation);
-    line = line.substr(commaLocation + 1, line.length());
 
-    std::cout << first << std::endl;
+    // checking for file correctness
+    if (!fd) {
+        return;
+    }
+    // skip the first line, this is a line of headers
+    std::getline(fd, wholeLine);
+
+    // Get the Ticker
+    std::getline(fd, wholeLine);
+    commaLocation = wholeLine.find(',');
+    wholeLine = wholeLine.substr(commaLocation + 1, wholeLine.length());
+    commaLocation = wholeLine.find(',');
+    ticker = wholeLine.substr(0, commaLocation);
+    stockdata.emplace(ticker, std::vector<StockData>{});
+
+    // continue reading CSV file until its complete
+    while (fd) {
+        StockData sd;
+        getline(fd, wholeLine);
+
+        if (wholeLine == "") {
+            return;
+        }
+
+        // get date
+        commaLocation = wholeLine.find(",");
+        date = wholeLine.substr(0, commaLocation);
+        sd.Date = date;
+        wholeLine = wholeLine.substr(commaLocation + 1, wholeLine.length());
+
+        // get price
+        commaLocation = wholeLine.find(",");
+        price = stod(wholeLine.substr(0, commaLocation));
+        sd.Price = price;
+        wholeLine = wholeLine.substr(commaLocation + 1, wholeLine.length());
+
+        // get close 
+        commaLocation = wholeLine.find(",");
+        close = stod(wholeLine.substr(0, commaLocation));
+        sd.Close = close;
+        wholeLine = wholeLine.substr(commaLocation + 1, wholeLine.length());
+
+        // get high
+        commaLocation = wholeLine.find(",");
+        high = stod(wholeLine.substr(0, commaLocation));
+        sd.High = high;
+        wholeLine = wholeLine.substr(commaLocation + 1, wholeLine.length());
+
+        // get low
+        commaLocation = wholeLine.find(",");
+        low = stod(wholeLine.substr(0, commaLocation));
+        sd.Low = low;
+        wholeLine = wholeLine.substr(commaLocation + 1, wholeLine.length());
+
+        // get open
+        commaLocation = wholeLine.find(",");
+        open = stod(wholeLine.substr(0, commaLocation));
+        sd.Open = open;
+        wholeLine = wholeLine.substr(commaLocation + 1, wholeLine.length());
+
+        // volume
+        commaLocation = wholeLine.find(",");
+        volume = stoull(wholeLine.substr(0, commaLocation));
+        sd.Volume = volume;
+        wholeLine = wholeLine.substr(commaLocation + 1, wholeLine.length());
+
+        stockdata[ticker].push_back(sd);
+    }
+
+    fd.close();
 }
 
-// void DataCollector::EnterData(std::vector<StockData> &stockdata) {
+void DataCollector::LineOfData(std::map<std::string, std::vector<StockData>> &stockdata, std::string ticker) {
+    std::vector<StockData> line = stockdata[ticker];
+    std::cout   << "One line of stock data: "
+                << line[0].Date << ", "
+                << std::to_string(line[0].Price) << ", "
+                << std::to_string(line[0].Close) << "," 
+                << std::to_string(line[0].High) << ", "
+                << std::to_string(line[0].Low) << ", "
+                << std::to_string(line[0].Open) << ", "
+                << std::to_string(line[0].Volume) 
+                << std::endl;
+}
 
+// std::string DataCollector::getTicker(std::map<std::string, std::vector<StockData>> &stockdata) {
+//     return "";
 // }
 
-// void DataCollector::StoreValues(std::vector<StockData> &stockdata) {
-
+// std::string DataCollector::getDate(std::map<std::string, std::vector<StockData>> &stockdata, std::string ticker) {
+//     return stockdata[ticker].Date;
 // }
 
-// // std::string DataCollector::getTicker(std::vector<StockData> &stockdata) {
-// //     return;
-// // }
-
-// std::string DataCollector::getDate(std::vector<StockData> &stockdata) {
+// double DataCollector::getClose(std::map<std::string, std::vector<StockData>> &stockdata) {
 //     return;
 // }
 
-// double DataCollector::getClose(std::vector<StockData> &stockdata) {
+// double DataCollector::getHigh(std::map<std::string, std::vector<StockData>> &stockdata) {
 //     return;
 // }
 
-// double DataCollector::getHigh(std::vector<StockData> &stockdata) {
+// double DataCollector::getLow(std::map<std::string, std::vector<StockData>> &stockdata) {
 //     return;
 // }
 
-// double DataCollector::getLow(std::vector<StockData> &stockdata) {
+// double DataCollector::getOpen(std::map<std::string, std::vector<StockData>> &stockdata) {
 //     return;
 // }
 
-// double DataCollector::getOpen(std::vector<StockData> &stockdata) {
-//     return;
-// }
-
-// uint64_t DataCollector::getVolume(std::vector<StockData> &stockdata) {
+// uint64_t DataCollector::getVolume(std::map<std::string, std::vector<StockData>> &stockdata) {
 //     return;
 // }
